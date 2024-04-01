@@ -54,49 +54,73 @@ class BinaryTree {
     return false
   }
 
-  remove(value){
-    this.root = this.helperRemove(this.root,value)
+  remove(value) {
+    if (this.contains(new Node(value))) {
+      this.root = this.removeNode(this.root, value)
+    } else {
+      return "invalid value"
+    }
   }
 
-  helperRemove(current,value){
-    if(current == null){
-      return null
+  removeNode(current, value) {
+    if (current == null) {
+      return
     }
 
-    if(current.data == value){
-        if(current.left ==null && current.right == null){
-          return null
-        }else if(current.left ==  null){
-          return current.right
-        }else if(current.right == null){
-          return current.left
-        }else{
-          let temp = this.smallestValue(current.left)
-          current.data = temp.data
-
-          current.right = this.helperRemove(current.right,temp.data)
-          return current
-        }
-    }else if(value < current.data){
-      current.left =  this.helperRemove(current.left,value)
+    if (current.data == value) {
+      if (current.left == null && current.right == null) {
+        return null
+      } else if (current.right == null) {
+        return current.left
+      } else if (current.left == null) {
+        return current.right
+      } else {
+        let temp = this.smallestValue(current.right)
+        current.data = temp.data
+        current.right = this.removeNode(current.right, temp.data)
+        return current
+      }
+    } else if (value < current.data) {
+      current.left = this.removeNode(current.left, value)
       return current
-    }else if(value>current.data){
-      current.right = this.helperRemove(current.right,value)
+    } else {
+      current.right = this.removeNode(current.right, value)
       return current
     }
-   }
+  }
 
-
-   smallestValue(node){
-    while(node.right!=null){
-      node = node.right
+  smallestValue(node) {
+    while (node.left != null) {
+      node = node.left
     }
     return node
-   }
+  }
 
+  inOrder(node) {
+    if (node == null) {
+      return node
+    }
+    this.inOrder(node.left)
+    console.log(node.data);
+    this.inOrder(node.right)
+  }
 
-  display() {
-    console.log(this.root);
+  posteOrder(node) {
+    if(node == null){
+    return node
+    }
+    this.inOrder(node.left)
+    this.inOrder(node.right)
+    console.log(node.data);
+  }
+
+  preOrder(node){
+    if(node == null){
+      return node
+    }
+      console.log(node.data);
+      this.inOrder(node.left)
+      this.inOrder(node.right)
   }
 }
 
@@ -105,9 +129,5 @@ let tree = new BinaryTree()
 tree.insert(new Node(15))
 tree.insert(new Node(8))
 tree.insert(new Node(17))
-tree.insert(new Node(11))
-tree.insert(new Node(20))
-tree.insert(new Node(4))
-tree.insert(new Node(6))
-tree.remove(4)
-tree.display()
+tree.posteOrder(tree.root)
+
